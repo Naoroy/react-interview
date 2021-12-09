@@ -1,0 +1,14 @@
+.movie-card {
+  padding: 2rem;
+}
+
+.movie-card h2 {
+  font-size: 1.3rem;
+  color: #333;
+  font-size: bold;
+}
+
+.category {
+  color: #FFF;
+  background: #333
+}

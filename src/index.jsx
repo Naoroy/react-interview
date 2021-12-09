@@ -25,8 +25,7 @@ class App extends React.Component {
     return(
     <>
       {
-        this.state.movies.slice(-3).map(movie => {
-          console.log(movie)
+        this.state.movies.slice(0).map(movie => {
           return (
               <Movie key={movie.id} movie={movie}/>
           )

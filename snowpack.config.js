@@ -19,4 +19,7 @@ module.exports = {
   buildOptions: {
     /* ... */
   },
+  knownEntryPoints: [
+    "react/jsx-runtime"
+  ]
 };

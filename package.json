@@ -19,7 +19,9 @@
   },
   "homepage": "https://github.com/Naoroy/react-interview#readme",
   "dependencies": {
+    "bootstrap": "^5.1.3",
     "react": "^17.0.2",
+    "react-bootstrap": "^2.0.3",
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
