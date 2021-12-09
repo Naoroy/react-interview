@@ -1,12 +1,37 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import Movie from './movie.component'
+import { movies$ as movies } from './../movies.js'
 
 
 class App extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      movies: []
+    }
+  }
+
+  componentDidMount() {
+    this.getMovies()
+      .then(movies => this.setState({movies}))
+  }
+
+  async getMovies() {
+    return await movies
+  }
+
   render() {
     return(
     <>
-      <p>Hey</p>
+      {
+        this.state.movies.slice(-3).map(movie => {
+          console.log(movie)
+          return (
+              <Movie key={movie.id} movie={movie}/>
+          )
+        })
+      }
     </>
     )
   }
