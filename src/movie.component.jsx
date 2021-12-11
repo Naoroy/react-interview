@@ -9,11 +9,19 @@ class Movie extends Component {
   constructor(props) {
     super(props)
   }
+
   render() {
     const movie = this.props.movie
     return (
       <div className={style['movie-card']}>
-        <p className={style['category']}>{movie.category}</p>
+        <div className={'d-flex justify-content-between'}>
+          <p className={style['category']}>{movie.category}</p>
+          <Button
+            onClick={()=> { this.props.deleteMovie(movie.id) }}
+            variant="danger">
+              X
+          </Button>
+        </div>
         <h2>{movie.title}</h2>
         <LikeBar likes={movie.likes} dislikes={movie.dislikes} />
       </div>
