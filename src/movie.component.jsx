@@ -3,7 +3,6 @@ import style from './movie.module.css'
 import 'bootstrap/dist/css/bootstrap.css'
 import ProgressBar from 'react-bootstrap/ProgressBar'
 import Button from 'react-bootstrap/Button'
-import ToggleButton from 'react-bootstrap/ToggleButton'
 
 
 class Movie extends Component {
@@ -17,13 +16,13 @@ class Movie extends Component {
   render() {
     const movie = this.props.movie
     return (
-      <div className={style['movie-card']}>
+      <div className={style.movieCard}>
         <div className={'d-flex justify-content-between'}>
-          <p className={style['category']}>{movie.category}</p>
+          <p className={style.category}>{movie.category}</p>
           <Button
+            className={style.deleteBtn}
             onClick={()=> { this.props.deleteMovie(movie.id) }}
             variant="danger">
-              X
           </Button>
         </div>
         <h2>{movie.title}</h2>

@@ -1,8 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Provider } from 'react-redux'
-import { createStore } from 'redux'
-import { connect, useSelector } from 'react-redux'
+//import { Provider } from 'react-redux'
+//import { createStore } from 'redux'
 import Movie from './movie.component'
 import { movies$ as movies } from './../movies.js'
 
@@ -60,7 +59,6 @@ class App extends React.Component {
   render() {
     return(
     <>
-      <input type="text" onChange={this.search} />
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
       {
         this.state.movies.slice(0).map(movie => {
@@ -87,6 +85,5 @@ class Wrapper extends React.Component {
 }
 */
 
-//ReactDOM.render(<Wrapper />, document.querySelector('#app'))
 ReactDOM.render(<App />, document.querySelector('#app'))
 
