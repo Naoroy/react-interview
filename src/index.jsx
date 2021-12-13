@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 //import { createStore } from 'redux'
 import Movie from './movie.component'
 import { movies$ as movies } from './../movies.js'
+import style from './index.module.css'
 
 /* Store start */
 /*
@@ -36,18 +37,36 @@ class App extends React.Component {
     super(props)
     this.state = {
       movies: [],
-      searchQuery: ''
+      filteredMovies: [],
+      searchQuery: 'Comedy',
+      categories: []
     }
     this.search = this.search.bind(this)
     this.deleteMovie = this.deleteMovie.bind(this)
   }
 
   componentDidMount() {
-      movies.then(movies => this.setState({ movies }))
+    movies.then(movies => {
+      let categories = []
+      movies.forEach(m => {
+        if (categories.indexOf(m.category) == -1) {
+          categories.push(m.category)
+        }
+      })
+      this.setState({ filteredMovies: movies, movies, categories })
+    })
   }
 
   search(e) {
-    this.setState({ searchQuery: e.target.value })
+    let searchQuery = e.target.value
+    if (!searchQuery) { return }
+
+    let m = this.state.movies
+    let filteredMovies = m.filter(m => {
+      return m.category == searchQuery
+    })
+
+    this.setState({ filteredMovies, searchQuery })
   }
 
   deleteMovie(id) {
@@ -59,22 +78,31 @@ class App extends React.Component {
   render() {
     return(
     <>
+      <input
+        type="text"
+        onChange={this.search}
+      />
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
       {
-        this.state.movies.slice(0).map(movie => {
-          return (
-            <Movie
-              key={movie.id}
-              movie={movie}
-              deleteMovie={(id) => this.deleteMovie(id)}
-            />
-          )
-        })
+          this.state.filteredMovies.slice(0).map(movie => {
+            return (
+              <Movie
+                hidden={movie.hidden}
+                key={movie.id}
+                movie={movie}
+                deleteMovie={(id) => this.deleteMovie(id)}
+              />
+            )
+          })
       }
       </div>
     </>
     )
   }
+}
+
+class MultiSelect {
+
 }
 
 /*

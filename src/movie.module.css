@@ -28,10 +28,15 @@
   width: 1rem !important;
   position: relative;
 }
+
 .deleteBtn:before {
   content: 'x';
   position: absolute;
   top: -25%;
   left: 25%;
   color: #FFF;
+}
+
+.hide {
+  display: none !important;
 }

@@ -16,7 +16,7 @@ class Movie extends Component {
   render() {
     const movie = this.props.movie
     return (
-      <div className={style.movieCard}>
+      <div className={`${this.props.hidden?'hide':''} ${style.movieCard}`}>
         <div className={'d-flex justify-content-between'}>
           <p className={style.category}>{movie.category}</p>
           <Button
