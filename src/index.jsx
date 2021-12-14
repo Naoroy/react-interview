@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom'
 //import { createStore } from 'redux'
 import Movie from './movie.component'
 import { movies$ as movies } from './../movies.js'
-import style from './index.module.css'
+import Button from 'react-bootstrap/Button'
 
 /* Store start */
 /*
@@ -38,7 +38,7 @@ class App extends React.Component {
     this.state = {
       movies: [],
       filteredMovies: [],
-      searchQuery: 'Comedy',
+      searchQueries: [],
       categories: []
     }
     this.search = this.search.bind(this)
@@ -57,16 +57,12 @@ class App extends React.Component {
     })
   }
 
-  search(e) {
-    let searchQuery = e.target.value
-    if (!searchQuery) { return }
+  search(category) {
+    let sq = this.state.searchQueries
+    let i = sq.indexOf(category)
+    let newSearchQueries = i != -1 ? [ ...sq.slice(0,i), ...sq.slice(i+1) ] : [ ...sq, category ]
 
-    let m = this.state.movies
-    let filteredMovies = m.filter(m => {
-      return m.category == searchQuery
-    })
-
-    this.setState({ filteredMovies, searchQuery })
+    this.setState({ searchQueries: newSearchQueries })
   }
 
   deleteMovie(id) {
@@ -78,13 +74,15 @@ class App extends React.Component {
   render() {
     return(
     <>
-      <input
-        type="text"
-        onChange={this.search}
-      />
+      <MultiSelect search={this.search} category={this.state.categories}/>
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
       {
-          this.state.filteredMovies.slice(0).map(movie => {
+          this.state.filteredMovies.slice(0)
+          .filter(m => {
+            if (this.state.searchQueries.length == 0) { return true }
+            return this.state.searchQueries.indexOf(m.category) != -1
+          })
+          .map(movie => {
             return (
               <Movie
                 hidden={movie.hidden}
@@ -101,7 +99,34 @@ class App extends React.Component {
   }
 }
 
-class MultiSelect {
+class MultiSelect extends React.Component {
+  constructor(props) {
+    super(props)
+    this.toggleActive = this.toggleActive.bind(this)
+  }
+  toggleActive(e, category) {
+    e.target.classList.toggle('active')
+    this.props.search(category)
+  }
+  render () {
+    return (
+      <>
+        {
+          this.props.category.map(c => {
+            return (
+              <Button 
+                style={{ borderRadius: '2rem 2rem', margin: '1rem' }}
+                variant='outline-dark'
+                onClick={(e) => this.toggleActive(e, c)}
+              >
+              {c}
+              </Button>
+            )
+          })
+        }
+      </>
+    )
+  }
 
 }
 
