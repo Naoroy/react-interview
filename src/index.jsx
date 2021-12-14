@@ -35,9 +35,9 @@ movies.then(function(movies){
 class App extends React.Component {
   constructor(props) {
     super(props)
+
     this.state = {
       movies: [],
-      filteredMovies: [],
       searchQueries: [],
       categories: []
     }
@@ -53,7 +53,8 @@ class App extends React.Component {
           categories.push(m.category)
         }
       })
-      this.setState({ filteredMovies: movies, movies, categories })
+
+      this.setState({ movies, categories })
     })
   }
 
@@ -77,7 +78,7 @@ class App extends React.Component {
       <MultiSelect search={this.search} category={this.state.categories}/>
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
       {
-          this.state.filteredMovies.slice(0)
+          this.state.movies
           .filter(m => {
             if (this.state.searchQueries.length == 0) { return true }
             return this.state.searchQueries.indexOf(m.category) != -1
