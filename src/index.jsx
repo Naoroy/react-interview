@@ -1,35 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-//import { Provider } from 'react-redux'
-//import { createStore } from 'redux'
 import Movie from './movie.component'
 import { movies$ as movies } from './../movies.js'
 import Button from 'react-bootstrap/Button'
-
-/* Store start */
-/*
-function movieInit(movies) {
-  return { type: 'INIT', movies }
-}
-
-function movieReducer(state = { movies: [], searchQuery: '' }, action) {
-  switch (action.type) {
-    case 'INIT':
-      return { movies: action.movies }
-    case 'DELETE':
-      return state.movies.filter(m => m.id = action.id)
-    default:
-      return state
-  }
-}
-
-const store = createStore(movieReducer)
-movies.then(function(movies){
-  store.dispatch(movieInit(movies))
-})
-
-*/
-/* Store end */
 
 
 class App extends React.Component {
@@ -52,6 +25,13 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    this.getMovies()
+  }
+  componentDidUpdate() {
+    this.getPageCount()
+  }
+
+  getMovies() {
     movies.then(movies => {
       let categories = []
       movies.forEach(m => {
@@ -65,9 +45,7 @@ class App extends React.Component {
         categories,
         moviesPerPage: this.state.moviesPerPagesOption[0],
       })
-      this.setState({
-        pageCount: this.getPageCount()
-      })
+      this.setState({ pageCount: this.getPageCount() })
     })
   }
 
@@ -92,7 +70,7 @@ class App extends React.Component {
 
   setMoviesPerPage (e) {
     const moviesPerPage = Number(e.target.value)
-    this.setState({ moviesPerPage, pageCount: this.getPageCount() })
+    this.setState({ moviesPerPage })
   }
 
   selectPage(option) {
@@ -212,20 +190,14 @@ class PageSelect extends React.Component {
   render() {
     return (
       <>
-        <Button onClick={this.props.prevPage}>&#60;</Button>
-        <Button onClick={this.props.nextPage}>&#62;</Button>
+        <Button variant="dark" onClick={this.props.prevPage}>&#60;</Button>
+        <Button variant="dark" onClick={this.props.nextPage}>&#62;</Button>
         <p>Page {this.props.currentPage}/{this.props.pageCount}</p>
       </>
     )
   }
 }
-/*
-class Wrapper extends React.Component {
-  render() {
-    return (<Provider store={store}> <App /> </Provider>)
-  }
-}
-*/
+
 
 ReactDOM.render(<App />, document.querySelector('#app'))
 
