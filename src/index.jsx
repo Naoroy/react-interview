@@ -39,10 +39,16 @@ class App extends React.Component {
     this.state = {
       movies: [],
       searchQueries: [],
-      categories: []
+      categories: [],
+      moviesPerPage: 0,
+      moviesPerPagesOption: [ 4, 8, 12 ],
+      currentPage: 1,
+      pageCount: 0
     }
     this.search = this.search.bind(this)
     this.deleteMovie = this.deleteMovie.bind(this)
+    this.setMoviesPerPage = this.setMoviesPerPage.bind(this)
+    this.selectPage = this.selectPage.bind(this)
   }
 
   componentDidMount() {
@@ -54,8 +60,19 @@ class App extends React.Component {
         }
       })
 
-      this.setState({ movies, categories })
+      this.setState({
+        movies,
+        categories,
+        moviesPerPage: this.state.moviesPerPagesOption[0],
+      })
+      this.setState({
+        pageCount: this.getPageCount()
+      })
     })
+  }
+
+  getPageCount() {
+    return Math.ceil(this.state.movies.length / this.state.moviesPerPage) || 1
   }
 
   search(category) {
@@ -68,14 +85,44 @@ class App extends React.Component {
 
   deleteMovie(id) {
     this.setState({
-      movies: this.state.movies.filter(m => m.id != id)
+      movies: this.state.movies.filter(m => m.id != id),
+      pageCount: this.getPageCount()
     })
   }
 
+  setMoviesPerPage (e) {
+    const moviesPerPage = Number(e.target.value)
+    this.setState({ moviesPerPage, pageCount: this.getPageCount() })
+  }
+
+  selectPage(option) {
+    let page
+    if (option == 'next') {
+      page = this.state.currentPage + 1
+      if (page > this.state.pageCount) {
+        page = this.state.pageCount
+      }
+    }
+    else {
+      page = this.state.currentPage - 1
+      if (page < 1) {
+        page = 1
+      }
+    }
+    this.setState({ currentPage: page })
+  }
+
   render() {
+    let currentPage = this.state.currentPage
+    let moviesPerPage = this.state.moviesPerPage
+
     return(
     <>
       <MultiSelect search={this.search} category={this.state.categories}/>
+      <MoviePerPageSelect
+        moviesPerPagesOption={this.state.moviesPerPagesOption}
+        setMoviesPerPage={this.setMoviesPerPage}
+      />
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
       {
           this.state.movies
@@ -83,6 +130,7 @@ class App extends React.Component {
             if (this.state.searchQueries.length == 0) { return true }
             return this.state.searchQueries.indexOf(m.category) != -1
           })
+          .slice((currentPage - 1) * moviesPerPage, (currentPage * moviesPerPage))
           .map(movie => {
             return (
               <Movie
@@ -95,6 +143,12 @@ class App extends React.Component {
           })
       }
       </div>
+      <PageSelect
+        prevPage={() => this.selectPage('prev')}
+        nextPage={() => this.selectPage('next')}
+        currentPage={this.state.currentPage}
+        pageCount={this.state.pageCount}
+      />
     </>
     )
   }
@@ -116,6 +170,7 @@ class MultiSelect extends React.Component {
           this.props.category.map(c => {
             return (
               <Button 
+                key={c}
                 style={{ borderRadius: '2rem 2rem', margin: '1rem' }}
                 variant='outline-dark'
                 onClick={(e) => this.toggleActive(e, c)}
@@ -128,9 +183,42 @@ class MultiSelect extends React.Component {
       </>
     )
   }
-
 }
 
+class MoviePerPageSelect extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+  render () {
+    return (
+      <>
+        <label htmlFor="pages">Résultat par pages</label>
+        <select id="pages" name="pages" onChange={this.props.setMoviesPerPage} >
+          {
+            this.props.moviesPerPagesOption
+              .map(p => (<option key={p} value={p}>{p}</option>))
+          }
+        </select>
+      </>
+    )
+  }
+}
+
+class PageSelect extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+
+  render() {
+    return (
+      <>
+        <Button onClick={this.props.prevPage}>&#60;</Button>
+        <Button onClick={this.props.nextPage}>&#62;</Button>
+        <p>Page {this.props.currentPage}/{this.props.pageCount}</p>
+      </>
+    )
+  }
+}
 /*
 class Wrapper extends React.Component {
   render() {
